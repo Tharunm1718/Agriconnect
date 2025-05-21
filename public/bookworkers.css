@@ -1,0 +1,77 @@
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .worker-card {
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .worker-card:nth-child(1) { animation-delay: 0.1s; }
+    .worker-card:nth-child(2) { animation-delay: 0.2s; }
+    .worker-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .book-btn {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .book-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    .book-btn:hover::after {
+      left: 100%;
+    }
+
+    .book-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(75, 115, 61, 0.2);
+    }
+
+    .book-btn:active {
+      transform: translateY(0);
+    }
+
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #EBB95E #fff;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #fff;
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #EBB95E;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .worker-card {
+        margin-bottom: 1rem;
+      }
+    }

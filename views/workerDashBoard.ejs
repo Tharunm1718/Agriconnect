@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect Worker Dashboard</title>
+    <link rel="icon" type="image/png" href="/images/agriconnect_logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7E2B0;
+        }
+
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(235, 185, 94, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4B733D;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #604E45;
+        }
+
+        /* For Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #4B733D rgba(235, 185, 94, 0.1);
+        }
+
+        .sidebar-icon {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-item:hover .sidebar-icon {
+            transform: translateX(5px);
+        }
+
+        .dashboard-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .dashboard-card:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .welcome-gradient {
+            background: linear-gradient(135deg, #DCA14D 0%, #EBB95E 63%, #E49C37 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-gradient::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+        }
+
+        .active-nav-item {
+            background-color: #D7C599;
+            position: relative;
+        }
+
+        .active-nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: #4B733D;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+
+            /* Sidebar */
+            .w-80 {
+                position: fixed;
+                left: -100%;
+                width: 85%;
+                height: 100vh;
+                z-index: 40;
+                transition: left 0.3s ease;
+            }
+
+            .w-80.active {
+                left: 0;
+            }
+
+            /* Main content */
+            .flex-1 {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            /* Header */
+            .h-28 {
+                height: 70px;
+            }
+
+            /* Grid layouts */
+            .grid-cols-4 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .lg\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Spacing */
+            .p-8 {
+                padding: 1rem !important;
+            }
+
+            .px-8 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            .py-6 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+            .gap-6 {
+                gap: 1rem !important;
+            }
+
+            /* Text sizes */
+            .text-3xl {
+                font-size: 1.5rem !important;
+            }
+
+            .text-2xl {
+                font-size: 1.25rem !important;
+            }
+
+            .text-xl {
+                font-size: 1.125rem !important;
+            }
+
+            /* Card heights */
+            .h-96 {
+                height: auto !important;
+                min-height: 300px !important;
+            }
+
+            /* User profile section */
+            .px-6.py-6 {
+                padding: 1rem !important;
+            }
+
+            .w-16.h-16 {
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+
+            .dashboard-card {
+                margin-bottom: 1rem;
+            }
+
+            .booking-info-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .booking-info-item {
+                width: 100%;
+                text-align: left;
+            }
+
+            .welcome-gradient {
+                padding: 1.5rem;
+            }
+
+            .sidebar-item {
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        /* Menu toggle button */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 50;
+            background: #EBB95E;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Overlay */
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 30;
+        }
+
+        .menu-overlay.active {
+            display: block;
+        }
+
+        /* Tablet view */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        /* Better button interactions */
+        button {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        button.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Improved notification badge */
+        .notification-badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Enhanced booking card */
+        .booking-card {
+            border: 1px solid rgba(96, 78, 69, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .booking-info-row {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(96, 78, 69, 0.1);
+        }
+
+        .booking-info-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Status indicators */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .status-active {
+            background-color: #4B733D;
+            box-shadow: 0 0 0 3px rgba(75, 115, 61, 0.2);
+        }
+
+        /* Improved sidebar interaction */
+        .sidebar-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            height: 0;
+            width: 3px;
+            background-color: #4B733D;
+            transition: height 0.3s ease;
+            transform: translateY(-50%);
+        }
+
+        .sidebar-item:hover::before {
+            height: 70%;
+        }
+
+        /* Loading states */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    rgba(255, 255, 255, 0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .dashboard-card {
+                margin-bottom: 1rem;
+            }
+
+            .booking-info-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .booking-info-item {
+                width: 100%;
+                text-align: left;
+            }
+
+            .welcome-gradient {
+                padding: 1.5rem;
+            }
+
+            .sidebar-item {
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Add menu toggle button -->
+    <button class="menu-toggle">
+        <i class="fas fa-bars text-[#502613] text-xl"></i>
+    </button>
+
+    <!-- Add overlay -->
+    <div class="menu-overlay"></div>
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="w-80 bg-[#EBB95E] flex flex-col">
+            <!-- Logo -->
+            <div class="h-28 flex items-end justify-start px-6 pb-4 border-b border-[#502613]/20">
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="w-20 h-20 flex items-center justify-center bg-transparent overflow-hidden flex-shrink-0">
+                        <img src="/images/agriconnect_logo.png" alt="AgriConnect Logo"
+                            class="w-18 h-18 object-contain hover:scale-105 transition-transform duration-300"
+                            onerror="this.onerror=null;this.src='/images/default_logo.png';">
+                    </div>
+                    <h1 class="text-2xl font-bold text-[#502613] flex-shrink-0 mt-6">AgriConnect</h1>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="px-6 py-6 flex items-center border-b border-[#502613]/20">
+                <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img src="/images/worker-avatar.svg" alt="Worker"
+                        class="w-full h-full object-cover rounded-full border-2 border-[#502613]">
+                </div>
+                <div class="ml-4">
+                    <p class="text-white font-semibold text-xl">Worker</p>
+                    <p class="text-[#502613] text-sm">
+                        <%=workerDetails.name%>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-4 py-6 overflow-y-auto">
+                <ul class="space-y-2">
+                    <li class="sidebar-item active-nav-item relative rounded-lg px-4 py-3">
+                        <a href="#" class="flex items-center text-[#4B733D]">
+                            <i class="fas fa-chart-line sidebar-icon text-xl mr-4"></i>
+                            <span class="font-medium text-lg">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-4 py-3">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-briefcase sidebar-icon text-xl mr-4"></i>
+                            <span class="font-medium text-lg">Active Jobs</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-4 py-3">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-calendar-alt sidebar-icon text-xl mr-4"></i>
+                            <span class="font-medium text-lg">Job History</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-4 py-3">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-wallet sidebar-icon text-xl mr-4"></i>
+                            <span class="font-medium text-lg">Earnings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-4 py-3">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-star sidebar-icon text-xl mr-4"></i>
+                            <span class="font-medium text-lg">Reviews</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-4 py-3">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-certificate sidebar-icon text-xl mr-4"></i>
+                            <span class="font-medium text-lg">Skills</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-[#502613]/20">
+                <div class="flex items-center justify-between">
+                    <button class="flex items-center text-[#502613]">
+                        <i class="fas fa-cog mr-2"></i>
+                        <span>Settings</span>
+                    </button>
+                    <a href="/logout/worker">
+                        <button class="flex items-center text-[#502613]">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            <span>Logout</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- Top Bar -->
+            <header class="h-28 bg-[#EBB95E] flex items-center justify-end px-8">
+                <div class="flex items-center space-x-6">
+                    <div class="relative">
+                        <i class="fas fa-bell text-2xl text-[#502613]"></i>
+                        <span
+                            class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">2</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="p-8">
+                <!-- Welcome Banner -->
+                <div class="welcome-gradient rounded-2xl p-6 mb-8 text-white">
+                    <h1 class="text-3xl font-bold mb-2">Welcome back, <%=workerDetails.name%>!</h1>
+                    <p class="text-lg opacity-90">You have completed 15 jobs this month. Keep up the great work!</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Active Job -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-12 h-12 rounded-full bg-[#604E45] flex items-center justify-center text-white">
+                                <i class="fas fa-tasks text-xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-xl font-bold text-[#604E45]">Active Job</h3>
+                        </div>
+                        <p class="text-[#604E45] text-sm mb-6">Harvesting at Village A</p>
+                        <button class="w-full bg-[#4B733D] text-white py-2 rounded-lg flex items-center justify-center">
+                            <span class="mr-2">View Details</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Available Jobs -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-12 h-12 rounded-full bg-[#604E45] flex items-center justify-center text-white">
+                                <i class="fas fa-briefcase text-xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-xl font-bold text-[#604E45]">Available Jobs</h3>
+                        </div>
+                        <p class="text-[#604E45] text-sm mb-6">5 new jobs in your area</p>
+                        <a href="/avilable-jobs">
+                            <button
+                                class="w-full bg-[#4B733D] text-white py-2 rounded-lg flex items-center justify-center">
+                                <span class="mr-2">Browse Jobs</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </div>
+
+                    <!-- Earnings -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-12 h-12 rounded-full bg-[#604E45] flex items-center justify-center text-white">
+                                <i class="fas fa-wallet text-xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-xl font-bold text-[#604E45]">Earnings</h3>
+                        </div>
+                        <p class="text-[#604E45] text-sm mb-6">₹2,500 earned this week</p>
+                        <button class="w-full bg-[#4B733D] text-white py-2 rounded-lg flex items-center justify-center">
+                            <span class="mr-2">View Details</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-12 h-12 rounded-full bg-[#604E45] flex items-center justify-center text-white">
+                                <i class="fas fa-certificate text-xl"></i>
+                            </div>
+                            <h3 class="ml-4 text-xl font-bold text-[#604E45]">Skills</h3>
+                        </div>
+                        <p class="text-[#604E45] text-sm mb-6">Update your farming skills</p>
+                        <button class="w-full bg-[#4B733D] text-white py-2 rounded-lg flex items-center justify-center">
+                            <span class="mr-2">Manage Skills</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recent Jobs -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-6 h-96">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold text-[#604E45]">Recent Jobs</h3>
+                            <button class="text-white text-sm bg-[#4B733D] px-4 py-1 rounded-lg flex items-center">
+                                <span>View All</span>
+                                <i class="fas fa-chevron-right ml-2"></i>
+                            </button>
+                        </div>
+                        <div class="h-64 relative flex items-center justify-center">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                                <i class="fas fa-history text-[#604E45]" style="font-size: 150px;"></i>
+                            </div>
+                            <% if (!isbooked||isbooked.completed==="No" ) { %>
+                                <div class="text-center z-10">
+                                    <p class="text-2xl font-bold text-[#604E45] mb-2">No Recent Jobs</p>
+                                    <p class="text-[#604E45]/70">Your completed jobs will appear here</p>
+                                </div>
+                                <% } else { %>
+                                    <div class="booking-card bg-[#F6E8D0] rounded-lg p-4">
+                                        <div class="booking-info">
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item">
+                                                    <span class="text-[#4B733D] font-medium">
+                                                        <%=isbooked.workType%>
+                                                    </span>
+                                                </div>
+                                                <div class="booking-info-item text-right">
+                                                </div>
+                                            </div>
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item text-[#6E5243]">
+                                                    <%=bookedfarmer.name%>
+                                                </div>
+                                                <div class="booking-info-item text-[#6E5243]">₹350/day</div>
+                                            </div>
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item text-[#6E5243]">Starts: <%=isbooked.date%>
+                                                </div>
+                                                <div class="booking-info-item text-[#6E5243]">
+                                                    <%=isbooked.location%>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 flex items-center justify-between">
+                                            <span class="text-[#6E5243] text-sm">Completion Status:</span>
+                                            <span
+                                                class="bg-[rgba(75,115,61,0.76)] text-white px-3 py-1 rounded-full text-sm flex items-center">
+                                                <% if (isbooked.completed==="Yes" ) { %>
+                                                    <i class="fas fa-check-circle mr-2"></i>
+                                                    <% } else { %>
+                                                        <i class="fas fa-times-circle mr-2"></i>
+                                                        <% } %>
+                                                            <%=isbooked.completed%>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Jobs -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-6 h-96">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold text-[#604E45]">Upcoming Jobs</h3>
+                            <a href="/avilable-jobs">
+                            <button class="text-white text-sm bg-[#4B733D] px-4 py-1 rounded-lg flex items-center">
+                                <span>View All</span>
+                                <i class="fas fa-chevron-right ml-2"></i>
+                            </button>
+                        </a>
+                        </div>
+                        <div class="h-64 relative flex items-center justify-center">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                                <i class="fas fa-calendar text-[#604E45]" style="font-size: 150px;"></i>
+                            </div>
+                            <% if (!isbooked||isbooked.completed==="Yes" ) { %>
+                                <div class="text-center z-10">
+                                    <p class="text-2xl font-bold text-[#604E45] mb-2">No Upcoming Jobs</p>
+                                    <p class="text-[#604E45]/70">Your scheduled jobs will appear here</p>
+                                </div>
+                                <% } else { %>
+                                    <div class="booking-card bg-[#F6E8D0] rounded-lg p-4">
+                                        <div class="booking-info">
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item">
+                                                    <span class="text-[#4B733D] font-medium">
+                                                        <%=isbooked.workType%>
+                                                    </span>
+                                                </div>
+                                                <div class="booking-info-item text-right">
+                                                </div>
+                                            </div>
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item text-[#6E5243]">
+                                                    <%=bookedfarmer.name%>
+                                                </div>
+                                                <div class="booking-info-item text-[#6E5243]">₹350/day</div>
+                                            </div>
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item text-[#6E5243]">Starts: <%=isbooked.date%>
+                                                </div>
+                                                <div class="booking-info-item text-[#6E5243]">
+                                                    <%=isbooked.location%>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add mobile menu functionality
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.w-80');
+            const overlay = document.querySelector('.menu-overlay');
+
+            menuToggle?.addEventListener('click', function () {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay?.addEventListener('click', function () {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            // Close menu on window resize
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+
+            // Highlight active sidebar item
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    sidebarItems.forEach(i => i.classList.remove('active-nav-item'));
+                    this.classList.add('active-nav-item');
+                });
+            });
+
+            // Notification bell animation
+            const bell = document.querySelector('.fa-bell');
+            bell.addEventListener('click', function () {
+                this.classList.add('animate-ring');
+                setTimeout(() => {
+                    this.classList.remove('animate-ring');
+                }, 1000);
+            });
+
+            // Add loading states to buttons
+            document.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (!this.classList.contains('loading')) {
+                        const originalText = this.innerHTML;
+                        this.classList.add('loading');
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>' + originalText;
+
+                        setTimeout(() => {
+                            this.classList.remove('loading');
+                            this.innerHTML = originalText;
+                        }, 1000);
+                    }
+                });
+            });
+
+            // Enhanced notification system
+            const notificationBadge = document.querySelector('.fa-bell + span');
+            if (notificationBadge) {
+                notificationBadge.classList.add('notification-badge');
+            }
+
+            // Add status indicators
+            const statusElements = document.querySelectorAll('.status-indicator');
+            statusElements.forEach(element => {
+                const status = element.dataset.status;
+                const dot = document.createElement('span');
+                dot.className = `status-dot status-${status}`;
+                element.prepend(dot);
+            });
+
+            // Smooth scroll for sidebar navigation
+            document.querySelectorAll('.sidebar-item a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#') {
+                        const target = document.querySelector(href);
+                        if (target) {
+                            e.preventDefault();
+                            target.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

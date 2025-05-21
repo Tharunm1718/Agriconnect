@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect Farmer Dashboard</title>
+    <link rel="icon" type="image/png" href="/images/agriconnect_logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/dashboard.css">
+    <style>
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(235, 185, 94, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4B733D;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #604E45;
+        }
+
+        /* For Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #4B733D rgba(235, 185, 94, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Menu Toggle Button -->
+        <button class="menu-toggle fixed top-4 left-4 z-50 bg-[#EBB95E] p-2 rounded-lg">
+            <i class="fas fa-bars text-[#502613] text-xl"></i>
+        </button>
+
+        <!-- Menu Overlay -->
+        <div class="menu-overlay"></div>
+
+        <!-- Sidebar with mobile class -->
+        <div class="sidebar w-80 bg-[#EBB95E] flex flex-col">
+            <!-- Logo -->
+            <div class="h-28 flex items-end justify-start px-6 pb-4 border-b border-[#502613]/20">
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="w-20 h-20 flex items-center justify-center bg-transparent overflow-hidden flex-shrink-0">
+                        <img src="/images/agriconnect_logo.png" alt="AgriConnect Logo"
+                            class="w-18 h-18 object-contain hover:scale-105 transition-transform duration-300"
+                            onerror="this.onerror=null;this.src='/images/default_logo.png';">
+                    </div>
+                    <h1 class="text-xl font-bold text-[#502613] flex-shrink-0 mt-4">AgriConnect</h1>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="px-6 py-6 flex items-center border-b border-[#502613]/20">
+                <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img src="/images/farmer-avatar.svg" alt="Farmer"
+                        class="w-full h-full object-cover rounded-full border-2 border-[#502613]">
+                </div>
+                <div class="ml-4">
+                    <p class="text-white font-semibold text-lg">Farmer</p>
+                    <p class="text-[#502613] text-xs">
+                        <%=farmerDetails.name%>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-4 py-6 overflow-y-auto">
+                <ul class="space-y-2">
+                    <li class="sidebar-item active-nav-item relative rounded-lg px-3 py-2">
+                        <a href="#" class="flex items-center text-[#4B733D]">
+                            <i class="fas fa-chart-line sidebar-icon text-lg mr-3"></i>
+                            <span class="font-medium text-base">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-3 py-2">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-calendar-alt sidebar-icon text-lg mr-3"></i>
+                            <span class="font-medium text-base">My Bookings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-3 py-2">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-users sidebar-icon text-lg mr-3"></i>
+                            <span class="font-medium text-base">Workers</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-3 py-2">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-tools sidebar-icon text-lg mr-3"></i>
+                            <span class="font-medium text-base">Tools</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-3 py-2">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-seedling sidebar-icon text-lg mr-3"></i>
+                            <span class="font-medium text-base">Fertilizers</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-3 py-2">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-credit-card sidebar-icon text-lg mr-3"></i>
+                            <span class="font-medium text-base">Payments</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item rounded-lg px-3 py-2">
+                        <a href="#" class="flex items-center text-[#604E45]">
+                            <i class="fas fa-truck sidebar-icon text-lg mr-3"></i>
+                            <span class="font-medium text-base">Deliveries</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-[#502613]/20">
+                <div class="flex items-center justify-between">
+                    <button class="flex items-center text-[#502613]">
+                        <i class="fas fa-cog mr-2"></i>
+                        <span>Settings</span>
+                    </button>
+                    <a href="/logout/farmer">
+                        <button class="flex items-center text-[#502613]">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            <span>Logout</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 overflow-y-auto">
+            <!-- Top Bar -->
+            <header class="h-16 bg-[#EBB95E] flex items-center justify-between px-4 md:px-8">
+                <div class="flex items-center">
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="relative">
+                        <i class="fas fa-bell text-2xl text-[#502613]"></i>
+                        <span
+                            class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">3</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="p-4 md:p-8">
+                <!-- Welcome Banner -->
+                <div class="welcome-gradient rounded-2xl p-6 mb-8 text-white">
+                    <h1 class="text-2xl font-bold mb-1">Welcome back,<%=farmerDetails.name%>!</h1>
+                    <p class="text-base opacity-90">Your farming operations are looking great this season. Need help with
+                        anything today?</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Book Farmer -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-4">
+                        <div class="flex items-center mb-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-[#604E45] flex-shrink-0 flex items-center justify-center text-white">
+                                <i class="fas fa-users text-lg"></i>
+                            </div>
+                            <h3 class="ml-3 text-lg font-bold text-[#604E45] text-container">Book Farmer</h3>
+                        </div>
+                        <p class="text-[#604E45] text-xs mb-4">Find skilled laborers for your farming needs</p>
+                        <a href="/book-worker-form">
+                            <button
+                                class="w-full bg-[#4B733D] text-white py-2 rounded-lg flex items-center justify-center">
+                                <span class="mr-2">Search more</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </div>
+
+                    <!-- Book Tools -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-4">
+                        <div class="flex items-center mb-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-[#604E45] flex-shrink-0 flex items-center justify-center text-white">
+                                <i class="fas fa-tools text-lg"></i>
+                            </div>
+                            <h3 class="ml-3 text-lg font-bold text-[#604E45] text-container">Book Tools</h3>
+                        </div>
+                        <p class="text-[#604E45] text-xs mb-4">Get tractors, harvesters and other tools</p>
+                        <button class="w-full bg-[#4B733D] text-white py-2 rounded-lg flex items-center justify-center">
+                            <span class="mr-2">Search more</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Book Fertilizers -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-4">
+                        <div class="flex items-center mb-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-[#604E45] flex-shrink-0 flex items-center justify-center text-white">
+                                <i class="fas fa-seedling text-lg"></i>
+                            </div>
+                            <h3 class="ml-3 text-lg font-bold text-[#604E45] text-container">Book Fertilizers</h3>
+                        </div>
+                        <p class="text-[#604E45] text-xs mb-4">Organic and chemical fertilizers with delivery</p>
+                        <button class="w-full bg-[#4B733D] text-white py-2 rounded-lg flex items-center justify-center">
+                            <span class="mr-2">Search more</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Smart Recommendation -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-4">
+                        <div class="flex items-center mb-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-[#604E45] flex-shrink-0 flex items-center justify-center text-white">
+                                <i class="fas fa-lightbulb text-lg"></i>
+                            </div>
+                            <h3 class="ml-3 text-lg font-bold text-[#604E45] text-container">Smart Recommendation</h3>
+                        </div>
+                        <p class="text-[#604E45] text-xs mb-4">Get personalized farming recommendations</p>
+                        <button class="w-full bg-[#4B733D] text-white py-2 rounded-lg flex items-center justify-center">
+                            <span class="mr-2">Search more</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                    <!-- Recent Activity -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-[#604E45] text-container">Recent Activity</h3>
+                            <a href="/activity-section">
+                                <button class="text-white text-xs bg-[#4B733D] px-3 py-1 rounded-lg flex items-center">
+                                    <span>View All</span>
+                                    <i class="fas fa-chevron-right ml-1"></i>
+                                </button>
+                            </a>
+                        </div>
+                        <div class="activity-section">
+                            <% if (!isbooked) { %>
+                                <div class="text-center">
+                                    <i class="fas fa-inbox text-4xl text-[#604E45] mb-4"></i>
+                                    <p class="text-xl font-bold text-[#604E45]">No Activity</p>
+                                </div>
+                                <% } else { %>
+
+                                    <div class="booking-card bg-[#F6E8D0] rounded-lg p-4">
+                                        <div class="booking-info">
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item">
+                                                    <span class="text-[#4B733D] font-medium">
+                                                        <%=isbooked.workType%>
+                                                    </span>
+                                                </div>
+                                                <div class="booking-info-item text-right">
+                                                    <span
+                                                        class="bg-[rgba(75,115,61,0.76)] text-white px-3 py-1 rounded-full text-sm">
+                                                        <%=isbooked.status%>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item text-[#6E5243]">
+                                                    <%=bookedWorker.name%>
+                                                </div>
+                                                <div class="booking-info-item text-[#6E5243]">₹350/day</div>
+                                            </div>
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item text-[#6E5243]">Starts: <%=isbooked.date%>
+                                                </div>
+                                                <div class="booking-info-item text-[#6E5243]">
+                                                    <%=isbooked.location%>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 flex items-center justify-between">
+                                                <span class="text-[#6E5243] text-sm">Completion Status:</span>
+                                                <span
+                                                    class="bg-[rgba(75,115,61,0.76)] text-white px-3 py-1 rounded-full text-sm flex items-center">
+                                                    <% if (isbooked.completed==="Yes" ) { %>
+                                                        <i class="fas fa-check-circle mr-2"></i>
+                                                        <% } else { %>
+                                                            <i class="fas fa-times-circle mr-2"></i>
+                                                            <% } %>
+                                                                <%=isbooked.completed%>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Bookings Section -->
+                    <div class="dashboard-card bg-[#EBB95E] rounded-xl p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-[#604E45] text-container">My Bookings</h3>
+                            <button class="text-white text-xs bg-[#4B733D] px-3 py-1 rounded-lg flex items-center">
+                                <span>View All</span>
+                                <i class="fas fa-chevron-right ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="activity-section">
+                            <% if (!isbooked) { %>
+                                <div class="flex flex-col items-center justify-center h-full">
+                                    <i class="fas fa-calendar-alt text-4xl text-[#604E45] mb-4"></i>
+                                    <p class="text-xl font-bold text-[#604E45]">No Bookings</p>
+                                </div>
+                                <% } else { %>
+
+                                    <div class="booking-card bg-[#F6E8D0] rounded-lg p-4">
+                                        <div class="booking-info">
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item">
+                                                    <span class="text-[#4B733D] font-medium">
+                                                        <%=isbooked.workType%>
+                                                    </span>
+                                                </div>
+                                                <div class="booking-info-item text-right">
+                                                    <span
+                                                        class="bg-[rgba(75,115,61,0.76)] text-white px-3 py-1 rounded-full text-sm">
+                                                        <%=isbooked.status%>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item text-[#6E5243]">
+                                                    <%=bookedWorker.name%>
+                                                </div>
+                                                <div class="booking-info-item text-[#6E5243]">₹350/day</div>
+                                            </div>
+                                            <div class="booking-info-row">
+                                                <div class="booking-info-item text-[#6E5243]">Starts: <%=isbooked.date%>
+                                                </div>
+                                                <div class="booking-info-item text-[#6E5243]">
+                                                    <%=isbooked.location%>
+                                                </div>
+                                            </div>
+                                            <div class="booking-info-item text-[#6E5243] text-sm">
+                                                5 workers needed
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile menu functionality
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.menu-overlay');
+
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            // Close menu on window resize if it goes above mobile breakpoint
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+
+            // Highlight active sidebar item on click
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    sidebarItems.forEach(i => i.classList.remove('active-nav-item'));
+                    this.classList.add('active-nav-item');
+                });
+            });
+
+            // Simulate loading data
+            setTimeout(() => {
+                // This is where you would typically fetch data from an API
+                console.log('Dashboard data loaded');
+            }, 1000);
+
+            // Notification bell animation
+            const bell = document.querySelector('.fa-bell');
+            bell.addEventListener('click', function () {
+                this.classList.add('animate-ring');
+                setTimeout(() => {
+                    this.classList.remove('animate-ring');
+                }, 1000);
+            });
+
+            // Add loading state to buttons
+            document.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (!this.classList.contains('loading')) {
+                        const originalText = this.innerHTML;
+                        this.classList.add('loading');
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>' + originalText;
+
+                        // Remove loading state after action completes
+                        setTimeout(() => {
+                            this.classList.remove('loading');
+                            this.innerHTML = originalText;
+                        }, 1000);
+                    }
+                });
+            });
+
+            // Add notification badge animation
+            const notificationBadge = document.querySelector('.notification-badge');
+            if (notificationBadge) {
+                notificationBadge.classList.add('notification-badge');
+            }
+
+            // Add keyboard navigation support
+            const focusableElements = document.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            focusableElements.forEach(element => {
+                element.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        element.click();
+                    }
+                });
+            });
+
+            // Improve mobile experience
+            if (window.innerWidth <= 768) {
+                const sidebarItems = document.querySelectorAll('.sidebar-item');
+                sidebarItems.forEach(item => {
+                    item.style.padding = '12px 16px';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

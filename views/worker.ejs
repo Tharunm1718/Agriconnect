@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect Worker Sign In</title>
+    <link rel="icon" type="image/png" href="/images/agriconnect_logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="w-full min-h-screen flex">
+        <div class="flex flex-col md:flex-row w-full">
+            <!-- Left Section -->
+            <div class="w-full md:w-1/2 bg-[#F7E2B0] p-6 md:p-10 flex flex-col items-center justify-center md:fixed h-[60vh] md:h-screen">
+                <img src="/images/login3.png" alt="AgriConnect Visual" class="w-full h-auto max-h-[300px] md:max-h-[600px] object-contain" />
+                <div class="mt-4 md:mt-8 flex space-x-4">
+                    <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#4B733D]">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#4B733D]">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#4B733D]">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right Section -->
+            <div class="w-full md:w-1/2 p-12 bg-[#EBB95E]">
+                <div class="flex justify-center mb-8">
+                    <div class="w-40 h-40 flex items-center justify-center bg-transparent overflow-hidden mx-auto">
+                        <img src="/images/agriconnect_logo.png" alt="AgriConnect Logo" class="w-36 h-36 object-contain mx-auto" onerror="this.onerror=null;this.src='/images/default_logo.png';">
+                    </div>
+                </div>
+                
+                <h1 class="text-[40px] font-extrabold text-[#4B733D] text-center mb-4">Welcome Back</h1>
+                <p class="text-[24px] font-medium text-[#6E5243] text-center mb-12">Sign in to your AgriConnect account</p>
+                
+                <!-- Role Selector -->
+                <div class="role-selector flex justify-center mb-12 w-full max-w-[462px] mx-auto">
+                    <div class="flex w-full shadow-lg rounded-xl overflow-hidden">
+                        <a href="/login/farmer" class="role inactive w-1/2 bg-white text-[#4B733D] h-[80px] flex flex-col items-center justify-center hover:bg-gray-50 transition-all duration-300 py-3">
+                            <div class="icon-wrapper w-10 h-10 bg-[#4B733D] rounded-full flex items-center justify-center mb-1">
+                                <i class="fas fa-user-tie text-white text-xl"></i>
+                            </div>
+                            <span class="text-[20px] font-semibold">Farmer</span>
+                        </a>
+                        <div class="role active w-1/2 bg-[#4B733D] text-white h-[80px] flex flex-col items-center justify-center cursor-pointer transition-all duration-300 py-3">
+                            <div class="icon-wrapper w-10 h-10 bg-white rounded-full flex items-center justify-center mb-1">
+                                <i class="fas fa-hard-hat text-[#4B733D] text-xl"></i>
+                            </div>
+                            <span class="text-[20px] font-semibold">Worker</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Login Form -->
+                <form class="login-form max-w-[563px] mx-auto" action="/login/farmer" method="POST">
+                    <input type="hidden" name="role" value="farmer">
+                    
+                    <div class="form-group mb-6">
+                        <label for="phoneNumber" class="block text-white text-xl font-semibold mb-3">Phone Number</label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <span class="text-[#4B733D] font-semibold">+91</span>
+                            </div>
+                            <input
+                                type="text"
+                                id="phone"
+                                name="phoneNumber"
+                                class="w-full pl-12 pr-4 py-4 bg-[#F7E2B0] rounded-xl border-2 border-transparent focus:border-[#4B733D] focus:ring-2 focus:ring-[#4B733D]/20 transition-all duration-300 text-lg font-medium placeholder-[#4B733D]/50"
+                                placeholder="Enter your registered phone number"
+                                required
+                            />
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-6">
+                        <label for="password" class="block text-white text-xl font-semibold mb-3">Password</label>
+                        <div class="relative group">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="w-full px-4 py-4 bg-[#F7E2B0] rounded-xl border-2 border-transparent focus:border-[#4B733D] focus:ring-2 focus:ring-[#4B733D]/20 transition-all duration-300 text-lg font-medium placeholder-[#4B733D]/50"
+                                placeholder="Enter your password"
+                                required
+                            />
+                            <button 
+                                type="button" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#4B733D] hover:text-[#4B733D]/70 transition-colors duration-300" 
+                                onclick="togglePassword()"
+                            >
+                                <i class="far fa-eye text-xl" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="forgot-password text-right mb-6">
+                        <a href="/forgot-password" class="text-white text-lg font-semibold hover:text-[#4B733D] transition-colors duration-300">
+                            Forgot password?
+                        </a>
+                    </div>
+                    
+                    <button 
+                        type="submit" 
+                        class="sign-in-button w-full bg-[#4B733D] text-white py-4 rounded-xl font-semibold text-xl hover:bg-[#3a5a2d] active:scale-[0.98] transition-all duration-300 shadow-lg hover:shadow-xl mb-6"
+                    >
+                        Sign In
+                    </button>
+                    
+                    <div class="text-center text-white text-lg">
+                        Don't have an account? 
+                        <a href="/Agriconnect/signup" class="font-semibold hover:text-[#4B733D] transition-colors duration-300">
+                            Sign up
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Add animation to role selector
+        document.addEventListener('DOMContentLoaded', function() {
+            const roles = document.querySelectorAll('.role-selector .role');
+            
+            roles.forEach(role => {
+                role.addEventListener('click', function(e) {
+                    if (this.classList.contains('inactive')) {
+                        e.preventDefault();
+                        roles.forEach(r => {
+                            r.classList.toggle('active');
+                            r.classList.toggle('inactive');
+                            r.classList.toggle('bg-[#4B733D]');
+                            r.classList.toggle('bg-white');
+                            r.classList.toggle('text-white');
+                            r.classList.toggle('text-[#4B733D]');
+                        });
+                        
+                        // Update the form action based on selected role
+                        const form = document.querySelector('.login-form');
+                        const currentRole = document.querySelector('.role.active span').textContent.toLowerCase();
+                        form.action = `/login/${currentRole}`;
+                        document.querySelector('input[name="role"]').value = currentRole;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
