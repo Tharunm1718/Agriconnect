@@ -23,7 +23,6 @@ async function main() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
   } catch (err) {
-    // Keep error logging for critical failures
     console.error("❌ MongoDB connection error:", err);
   }
 }
@@ -48,15 +47,6 @@ app.use(
   })
 );
 
-// Add session debugging middleware only in development
-if (process.env.NODE_ENV !== "production") {
-  app.use((req, res, next) => {
-    console.log('Session ID:', req.sessionID);
-    console.log('Session Data:', req.session);
-    next();
-  });
-}
-
 // Auth Middleware
 function isFarmerLoggedIn(req, res, next) {
   if (!req.session.farmerId) {
@@ -67,7 +57,7 @@ function isFarmerLoggedIn(req, res, next) {
 
 function isWorkerLoggedIn(req, res, next) {
   if (!req.session.workerId) {
-    return res.redirect("/login/worker");
+    return res.redirect("/login/farmer");
   }
   next();
 }
