@@ -73,10 +73,10 @@ app.get("/Agriconnect/signup", (req, res) => {
 });
 
 app.post("/Agriconnect/signup", async (req, res) => {
-  const { name, phoneNumber, password, village, cap, district, state, pincode } = req.body;
-  village = village.caplitalize();
-  district = district.caplitalize();
-  state = state.caplitalize();
+  let { name, phoneNumber, password, village, cap, district, state, pincode } = req.body;
+  village = village.toLowerCase();
+  district = district.toLowerCase();
+  state = state.toLowerCase();
   const newFarmer = new farmer({
     name,
     phoneNumber,
@@ -88,10 +88,10 @@ app.post("/Agriconnect/signup", async (req, res) => {
 });
 
 app.post("/Agriconnect/signup/worker", async (req, res) => {
-  const { name, phoneNumber, password, skills, village, district, state, pincode } = req.body;
-  village = village.caplitalize();
-  district = district.caplitalize();
-  state = state.caplitalize();
+  let { name, phoneNumber, password, skills, village, district, state, pincode } = req.body;
+  village = village.toLowerCase();
+  district = district.toLowerCase();
+  state = state.toLowerCase();
   const skillsArray = skills.split(",").map(skill => skill.trim());
   const newWorker = new worker({
     name,
