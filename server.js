@@ -73,7 +73,10 @@ app.get("/Agriconnect/signup", (req, res) => {
 });
 
 app.post("/Agriconnect/signup", async (req, res) => {
-  const { name, phoneNumber, password, village, district, state, pincode } = req.body;
+  const { name, phoneNumber, password, village, cap, district, state, pincode } = req.body;
+  village = village.caplitalize();
+  district = district.caplitalize();
+  state = state.caplitalize();
   const newFarmer = new farmer({
     name,
     phoneNumber,
@@ -86,6 +89,9 @@ app.post("/Agriconnect/signup", async (req, res) => {
 
 app.post("/Agriconnect/signup/worker", async (req, res) => {
   const { name, phoneNumber, password, skills, village, district, state, pincode } = req.body;
+  village = village.caplitalize();
+  district = district.caplitalize();
+  state = state.caplitalize();
   const skillsArray = skills.split(",").map(skill => skill.trim());
   const newWorker = new worker({
     name,
@@ -111,7 +117,7 @@ app.post("/login/farmer", async (req, res) => {
     if (foundFarmer) {
       req.session.farmerId = foundFarmer._id;
       req.session.district = foundFarmer.location.district;
-      
+
       req.session.save((err) => {
         if (err) {
           return res.status(500).send("Error during login. Please try again.");
@@ -133,7 +139,7 @@ app.post("/login/worker", async (req, res) => {
     const foundWorker = await worker.findOne({ phoneNumber, password });
     if (foundWorker) {
       req.session.workerId = foundWorker._id;
-      
+
       req.session.save((err) => {
         if (err) {
           return res.status(500).send("Error during login. Please try again.");
