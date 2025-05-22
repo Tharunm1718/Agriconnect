@@ -10,7 +10,7 @@ const farmer = require("./models/farmer.js");
 const worker = require("./models/worker.js");
 const booking = require("./models/booking.js");
 
-// Middlewares
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -18,7 +18,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// MongoDB connection
+
 async function main() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -28,7 +28,7 @@ async function main() {
 }
 main();
 
-// Sessions (AFTER mongoose connects)
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "agriconnectSecretKey",
@@ -39,7 +39,7 @@ app.use(
       ttl: 24 * 60 * 60,
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       httpOnly: true,
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000
@@ -47,7 +47,7 @@ app.use(
   })
 );
 
-// Auth Middleware
+
 function isFarmerLoggedIn(req, res, next) {
   if (!req.session.farmerId) {
     return res.redirect("/login/farmer");
@@ -62,14 +62,12 @@ function isWorkerLoggedIn(req, res, next) {
   next();
 }
 
-// Routes
 
-// Home
 app.get("/", (req, res) => {
   res.render("home.ejs");
 });
 
-// Signup
+
 app.get("/Agriconnect/signup", (req, res) => {
   res.render("signup.ejs");
 });
@@ -100,7 +98,7 @@ app.post("/Agriconnect/signup/worker", async (req, res) => {
   res.redirect("/login/farmer");
 });
 
-// Login
+
 app.get("/login/farmer", (req, res) => {
   res.render("farmer.ejs");
 });
@@ -150,7 +148,7 @@ app.post("/login/worker", async (req, res) => {
   }
 });
 
-// Dashboards
+
 app.get("/dashboard/farmer", isFarmerLoggedIn, async (req, res) => {
   const farmerDetails = await farmer.findById(req.session.farmerId);
   const isbooked = await booking.findOne({ farmerId: farmerDetails._id });
@@ -175,7 +173,7 @@ app.get("/dashboard/worker", isWorkerLoggedIn, async (req, res) => {
   res.render("workerDashBoard.ejs", { workerDetails, bookedfarmer, isbooked });
 });
 
-// Booking routes
+
 app.get("/book-worker-form", isFarmerLoggedIn, (req, res) => {
   res.render("workform.ejs");
 });
@@ -215,7 +213,7 @@ app.post("/bookworker", isFarmerLoggedIn, async (req, res) => {
   res.redirect("/dashboard/farmer");
 });
 
-// Job and Activity sections
+
 app.get("/avilable-jobs", isWorkerLoggedIn, async (req, res) => {
   const isbooked = await booking.find({ workerId: req.session.workerId });
   let bookedfarmer = [];
@@ -254,7 +252,7 @@ app.post("/activity-section", isFarmerLoggedIn, async (req, res) => {
   res.redirect("/dashboard/farmer");
 });
 
-// Logout
+
 app.get("/logout/farmer", (req, res) => {
   req.session.destroy(err => {
     if (err) console.error("Error destroying farmer session:", err);
@@ -269,12 +267,12 @@ app.get("/logout/worker", (req, res) => {
   });
 });
 
-// Debug route
+
 app.get("/check-session", (req, res) => {
   res.send(req.session);
 });
 
-// Server listen
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`🚀 AgriConnect running at http://localhost:${port}`);
