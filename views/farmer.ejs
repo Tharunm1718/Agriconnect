@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="fast2sms" content="Ly3vK6NCaGKlIWjLxsBczk0oNw1u4o2c">
     <title>AgriConnect Sign In</title>
     <link rel="icon" type="image/png" href="/images/agriconnect_logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -103,8 +102,12 @@
                                 name="phoneNumber"
                                 class="w-full pl-12 pr-4 py-3 bg-[#F7E2B0] rounded-xl border-2 border-transparent focus:border-[#4B733D] focus:ring-2 focus:ring-[#4B733D]/20 transition-all duration-300 text-base font-medium placeholder-[#4B733D]/50"
                                 placeholder="Enter your registered phone number"
+                                pattern="[0-9]{10}"
+                                title="Please enter a valid 10-digit phone number"
                                 required
+                                oninput="validatePhone(this)"
                             />
+                            <div id="phoneError" class="hidden text-red-500 text-sm mt-1 absolute left-0">Phone number must be exactly 10 digits</div>
                         </div>
                     </div>
                     
@@ -204,6 +207,19 @@
                 });
             });
         });
+
+        function validatePhone(input) {
+            const phoneError = document.getElementById('phoneError');
+            const phoneNumber = input.value.replace(/\D/g, ''); // Remove non-digits
+            
+            if (phoneNumber.length !== 10) {
+                phoneError.classList.remove('hidden');
+                input.setCustomValidity('Phone number must be exactly 10 digits');
+            } else {
+                phoneError.classList.add('hidden');
+                input.setCustomValidity('');
+            }
+        }
     </script>
 </body>
 </html>
