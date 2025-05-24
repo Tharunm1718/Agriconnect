@@ -120,7 +120,7 @@
                                 required
                                 oninput="validatePhone(this)"
                             />
-                            <div id="phoneError" class="hidden text-red-500 text-sm mt-1 absolute left-0">Phone number must be exactly 10 digits</div>
+                            <div id="phoneError" class="hidden text-red-500 text-sm mt-1">Phone number must be exactly 10 digits</div>
                         </div>
                     </div>
                     
@@ -216,8 +216,12 @@
                                 name="phoneNumber"
                                 class="w-full pl-12 pr-4 py-3 bg-[#F7E2B0] rounded-xl border-2 border-transparent focus:border-[#4B733D] focus:ring-2 focus:ring-[#4B733D]/20 transition-all duration-300 text-lg font-medium placeholder-[#4B733D]/50"
                                 placeholder="Enter your phone number"
+                                pattern="[0-9]{10}"
+                                title="Please enter a valid 10-digit phone number"
                                 required
+                                oninput="validatePhone(this)"
                             />
+                            <div id="workerPhoneError" class="hidden text-red-500 text-sm mt-1">Phone number must be exactly 10 digits</div>
                         </div>
                     </div>
                     
