@@ -25,6 +25,10 @@ const farmerSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  profileImage: {
+    type: String,
+    default: '/images/default_profile.png',
   }
 });
 

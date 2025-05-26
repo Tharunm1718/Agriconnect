@@ -5,14 +5,16 @@ const path = require("path");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 require("dotenv").config();
+const bodyParser = require('body-parser');
+const cloudinary = require('cloudinary').v2;
 
 const farmer = require("./models/farmer.js");
 const worker = require("./models/worker.js");
 const booking = require("./models/booking.js");
 
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -27,7 +29,6 @@ async function main() {
   }
 }
 main();
-
 
 app.use(
   session({
@@ -62,6 +63,11 @@ function isWorkerLoggedIn(req, res, next) {
   next();
 }
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'your_cloud_name',
+  api_key: process.env.CLOUDINARY_API_KEY || 'your_api_key',
+  api_secret: process.env.CLOUDINARY_SEC_KEY || 'your_api_secret'
+});
 
 app.get("/", (req, res) => {
   res.render("home.ejs");
@@ -84,7 +90,8 @@ app.post("/Agriconnect/signup", async (req, res) => {
     location: { village, district, state, pincode },
   });
   await newFarmer.save();
-  res.redirect("/login/farmer");
+  req.session.newphoneNumber = phoneNumber;
+  res.redirect("/upload");
 });
 
 app.post("/Agriconnect/signup/worker", async (req, res) => {
@@ -101,9 +108,54 @@ app.post("/Agriconnect/signup/worker", async (req, res) => {
     location: { village, district, state, pincode },
   });
   await newWorker.save();
-  res.redirect("/login/farmer");
+  req.session.newphoneNumber = phoneNumber;
+  res.redirect("/upload");
 });
 
+app.get('/upload', (req, res) => {
+  res.render('profile.ejs'); 
+});
+
+app.post('/upload', async (req, res) => {
+  try {
+    const { image } = req.body;
+    if (!image) {
+      return res.status(400).json({ error: 'No image provided' });
+    }
+
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_SEC_KEY) {
+      console.error('Cloudinary credentials not properly configured');
+      return res.status(500).json({ error: 'Image upload service not properly configured' });
+    }
+
+    const result = await cloudinary.uploader.upload(image, {
+      folder: 'profile_pictures',
+    });
+
+    const url = cloudinary.url(result.public_id, {
+      transformation: [{ width: 80, height: 80, crop: 'fill', gravity: 'face', radius: 'max' }]
+    });
+
+    const phone = req.session.newphoneNumber;
+    const workerDoc = await worker.findOne({ phoneNumber: phone });
+    const farmerDoc = await farmer.findOne({ phoneNumber: phone });
+
+    if (workerDoc) {
+      workerDoc.profileImage = url;
+      await workerDoc.save();
+    } else if (farmerDoc) {
+      farmerDoc.profileImage = url;
+      await farmerDoc.save();
+    } else {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ success: true, url });
+  } catch (err) {
+    console.error('Upload Error:', err);
+    res.status(500).json({ error: 'Upload failed', details: err.message });
+  }
+});
 
 app.get("/login/farmer", (req, res) => {
   res.render("farmer.ejs");

@@ -27,6 +27,10 @@ const workerSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  profileImage: {
+    type: String,
+    default: '/images/default_profile.png',
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -81,13 +81,14 @@
 
     <!-- Styled Worker Cards Container -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
       <% if (isbooked.length > 0) { %>
         <% isbooked.forEach((entry, index) => { %>
           <% if(entry.status === "Pending") { %>
             <div class="worker-card bg-white rounded-xl p-4 shadow-lg border border-amber-100">
               <div class="flex items-center mb-4">
                 <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#604E45] to-[#7a6357] flex items-center justify-center text-white shadow-md">
-                  <i class="fas fa-user text-lg"></i>
+                  <img src="<%=bookedfarmer[index].profileImage%>" alt="">
                 </div>
                 <div class="ml-3">
                   <h3 class="text-lg font-bold text-[#604E45]">
